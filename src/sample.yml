@@ -17,6 +17,11 @@ global:
     that are reproduced in the value
        inside there may be indentations
     and this continues the previous block text
+  Without_linebreaks: >
+    in this case the line breaks of the multiline text
+    get replaced by space characters
+    
+    empty lines with the same indentation start a new paragraph
 
 next_part:
    decription: several independent dictionaries may exist in one file

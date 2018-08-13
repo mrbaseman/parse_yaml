@@ -5,19 +5,30 @@ function parse_yaml {
    local separator=${3:-_}
    local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=${fs:-$(echo @|tr @ '\034')}
    cat $1 | \
-   awk -F$fs "{if(match(\$0,/$s\|$s/)){
-           sub(/$s\|$s/,\"\");
+   awk -F$fs "{multi=0; 
+       if(match(\$0,/$s\|$s\$/)){multi=1; sub(/$s\|$s\$/,\"\");}
+       if(match(\$0,/$s>$s\$/)){multi=2; sub(/$s>$s\$/,\"\");}
+       while(multi>0){
            str=\$0; gsub(/^$s/,\"\", str);
 	   indent=index(\$0,str);
 	   indentstr=substr(\$0, 0, indent-1) \"  \";
 	   obuf=\$0;
 	   getline;
 	   while(index(\$0,indentstr)){
-	      obuf=obuf substr(\$0, length(indentstr)+1) \"\\\\n\";
-              getline;
+	       obuf=obuf substr(\$0, length(indentstr)+1);
+	       if (multi==1){obuf=obuf  \"\\\\n\";}
+	       if (multi==2){
+	           if(match(\$0,/^$s\$/))
+		       obuf=obuf \"\\\\n\";
+		       else obuf=obuf \" \"; 
+	       }
+               getline;
 	   }
-	   sub(/\\\\n\$/,\"\",obuf);
+	   sub(/$s\$/,\"\",obuf);
 	   print obuf;
+	   multi=0; 
+           if(match(\$0,/$s\|$s\$/)){multi=1; sub(/$s\|$s\$/,\"\");}
+           if(match(\$0,/$s>$s\$/)){multi=2; sub(/$s>$s\$/,\"\");}	   
        }
    print}" | \
    sed -ne "s|,$s\]$s\$|]|" \
