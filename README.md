@@ -3,7 +3,7 @@ a simple yaml parser implemented in bash
 
 `parse_yaml` provides a bash function that allows parsing simple YAML files. 
 The output is shell code that defines shell variables which contain the parsed values.
-`bash` doesn't support multidimensional arrays. Therefore a separate variable is created for each value, and the name of the variable consists of the names of all levels in the yaml file, glued together with `_` as a separator character.
+`bash` doesn't support multidimensional arrays. Therefore a separate variable is created for each value, and the name of the variable consists of the names of all levels in the yaml file, glued together with a separator character which defaults to `_`.
 
 ## Usage
 first source the script that defines `parse_yaml`
@@ -23,7 +23,10 @@ also, you can load defaults from one yaml file and overwrite the values with the
 eval $(parse_yaml defaults.yml)
 eval $(parse_yaml sample.yml)
 ```
-
+a prefix can be supplied as second argument. This prefix may also be an empty string, which allows you to supply a third argument which changes the separator string (e.g. from underscore to dash):
+```
+eval $(parse_yaml sample.yml "" "-")
+```
 
 ## A simple example input file:
 ```
