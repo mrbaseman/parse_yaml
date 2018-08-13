@@ -5,6 +5,26 @@ a simple yaml parser implemented in bash
 The output is shell code that defines shell variables which contain the parsed values.
 `bash` doesn't support multidimensional arrays. Therefore a separate variable is created for each value, and the name of the variable consists of the names of all levels in the yaml file, glued together with `_` as a separator character.
 
+## Usage
+first source the script that defines `parse_yaml`
+```
+source parse_yaml.sh
+```
+then, you can parse yaml files and assign shell variables
+```
+eval $(parse_yaml sample.yml)
+```
+or postprocess the output by other shell scripts or tools that take their input from stdin
+```
+parse_yaml sample.yml | some_script
+```
+also, you can load defaults from one yaml file and overwrite the values with the ones of a specific file
+```
+eval $(parse_yaml defaults.yml)
+eval $(parse_yaml sample.yml)
+```
+
+
 ## A simple example input file:
 ```
 global:
