@@ -50,5 +50,6 @@ global_sample_input_1_property2="value2"
 global_sample_input_2_property1="value 3"
 global_sample_input_2_property2="value 4"
 ```
+for more examples see the sample.yml file included in the src directory
 ## credits: 
 this work is based on Stefan Farestam's [answer on stackoverflow](https://stackoverflow.com/questions/5014632/how-can-i-parse-a-yaml-file-from-a-linux-shell-script)

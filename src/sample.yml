@@ -1,9 +1,22 @@
 global:
-  input:
-    - "main.c"
-    - "main.h"
-  flags: [ "-O3", "-fpic" ]
-  sample_input:
-    -  { property1: value1, property2: value2 }
-    -  { property1: "value 3", property2: 'value 4' }
+  description: "this is a dictionary entry"
+  next: "this is the second entry
+    lower: 'indentation by two characters start a new level'
+  upper: again on upper level of the dictionary
+  short_notation: { lower: 'indentation with short notation', next: "second entry on lower level" }
+  first_list:
+    - "item 1"
+    - "item 2"
+    - ...
+  short_list: [ "first item", "second item", ]
+  list_of_dictionaries:
+    -  { item_number: 1, first_value: value1, second_value: value2 }
+    -  { item_number: "two", first_value: "value 3", second_value: 'value 4' }
+  text_with_linebreaks: |
+    this is a multiline text with linebreaks
+    that are reproduced in the value
+       inside there may be indentations
+    and this continues the previous block text
 
+next_part:
+   decription: several independent dictionaries may exist in one file
