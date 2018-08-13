@@ -46,7 +46,7 @@ global_input_2="main.h"
 global_flags_1="-O3"
 global_flags_2="-fpic"
 global_sample_input_1_property1="value1"
-global_sample_input_1_property2="value2 "
+global_sample_input_1_property2="value2"
 global_sample_input_2_property1="value 3"
 global_sample_input_2_property2="value 4"
 ```
