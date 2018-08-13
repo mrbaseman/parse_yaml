@@ -6,3 +6,4 @@ global:
   sample_input:
     -  { property1: value1, property2: value2 }
     -  { property1: "value 3", property2: 'value 4' }
+
