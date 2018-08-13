@@ -24,4 +24,4 @@ global:
     empty lines with the same indentation start a new paragraph
 
 next_part:
-   decription: several independent dictionaries may exist in one file
+  decription: several independent dictionaries may exist in one file
