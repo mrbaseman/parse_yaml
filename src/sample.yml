@@ -1,13 +1,15 @@
 global: # this is a comment
-  description: "this is a dictionary entry"
+  description: &value "this is a dictionary entry" # it also holds an anchor
   next: "this is the second entry"
     lower: 'indentation by two characters start a new level'
   upper: again on upper level of the dictionary
+  backref: *value # this references the above anchor
   short_notation: { lower: 'indentation with short notation', next: "second entry on lower level" }
-  first_list:
+  first_list: &list
     - "item 1" # with a comment on a line with quotes
-    - "item 2"
+    - &item "item 2"
     - ...
+    - *item # again a reference
   unordered_set: # gets converted to an ordered list for simplicity
     ? A
     ? B
@@ -15,6 +17,7 @@ global: # this is a comment
   short_list: [ "first item", "second item", ] # also a comment
   list_of_dictionaries:
     -  { item_number: 1, first_value: value1, second_value: value2 }
+    - *list
 # another comment
     -  { item_number: "two", first_value: "value 3", second_value: 'value 4' }
   text_with_linebreaks: |

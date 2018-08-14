@@ -31,7 +31,7 @@ function parse_yaml {
            if(match(\$0,/$s>$s\$/)){multi=2; sub(/$s>$s\$/,\"\");}
        }
    print}" | \
-   sed -e "s|^\($s\)?|\1-|" \
+   sed  -e "s|^\($s\)?|\1-|" \
        -ne "s|$s#[^\"']*||;s|^\([^\"'#]*\)#.*|\1|;t1;t;:1;s|^$s\$||;t2;p;:2;d" | \
    sed -ne "s|,$s\]$s\$|]|" \
         -e ":1;s|^\($s\)\($w\)$s:$s\[$s\(.*\)$s,$s\(.*\)$s\]|\1\2: [\3]\n\1$i- \4|;t1" \
@@ -43,6 +43,8 @@ function parse_yaml {
         -e "s|^\($s\)-$s{$s\(.*\)$s}|\1-\n\1$i\2|;" \
         -e ":2;s|^\($s\)\($w\)$s:$s{$s\(.*\)$s,$s\($w\)$s:$s\(.*\)$s}|\1\2: {\3}\n\1$i\4: \5|;t2" \
         -e "s|^\($s\)\($w\)$s:$s{$s\(.*\)$s}|\1\2:\n\1$i\3|;p" | \
+   sed  -e "s|^\($s\)\($w\)$s:$s\(&$w\)\(.*\)|\1\2:\4\n\3|" \
+        -e "s|^\($s\)-$s\(&$w\)\(.*\)|\1- \3\n\2|" | \
    sed -ne "s|^\($s\):|\1|" \
         -e "s|^\($s\)-$s[\"']\(.*\)[\"']$s\$|\1$fs$fs\2|p;t" \
         -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p;t" \
@@ -50,13 +52,26 @@ function parse_yaml {
         -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|" \
         -e "s|$s\$||p" | \
    awk -F$fs "{
+      if(match(\$1,/^\&/)){anchor[substr(\$1,2)]=full_vn;getline};
       indent = length(\$1)/length(\"$i\");
       vname[indent] = \$2;
+      value= \$3;
       for (i in vname) {if (i > indent) {delete vname[i]; idx[i]=0}}
       if(length(\$2)== 0){  vname[indent]= ++idx[indent] };
-      if (length(\$3) > 0) {
-         vn=\"\"; for (i=0; i<indent; i++) { vn=(vn)(vname[i])(\"$separator\")}
-         printf(\"%s%s%s=\\\"%s\\\"\n\", \"$prefix\",vn, vname[indent], \$3);
+      vn=\"\"; for (i=0; i<indent; i++) { vn=(vn)(vname[i])(\"$separator\")}
+      full_vn=\"$prefix\" vn vname[indent];
+      assignment[full_vn]=value;
+      if(match(value,/^\*/)){
+	 ref=anchor[substr(value,2)];
+	 for(val in assignment){
+	    if(index(val, ref)==1){
+	       tmpval=assignment[val];
+	       sub(ref,full_vn,val);
+	       printf(\"%s=\\\"%s\\\"\n\", val, tmpval);
+	    }
+	 }
+      } else if (length(value) > 0) {
+	 printf(\"%s=\\\"%s\\\"\n\", full_vn, value);
       }
    }"
 }
