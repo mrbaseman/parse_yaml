@@ -1,6 +1,6 @@
 global: # this is a comment
   description: "this is a dictionary entry"
-  next: "this is the second entry
+  next: "this is the second entry"
     lower: 'indentation by two characters start a new level'
   upper: again on upper level of the dictionary
   short_notation: { lower: 'indentation with short notation', next: "second entry on lower level" }
@@ -8,6 +8,10 @@ global: # this is a comment
     - "item 1" # with a comment on a line with quotes
     - "item 2"
     - ...
+  unordered_set: # gets converted to an ordered list for simplicity
+    ? A
+    ? B
+    ? C
   short_list: [ "first item", "second item", ] # also a comment
   list_of_dictionaries:
     -  { item_number: 1, first_value: value1, second_value: value2 }
