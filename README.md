@@ -51,5 +51,36 @@ global_sample_input_2_property1="value 3"
 global_sample_input_2_property2="value 4"
 ```
 for more examples see the sample.yml file included in the src directory
+
+## Features
+The following yaml features are currently supported:
+
+* comments (`# comment`)
+* dictionaries, mappings or collections (`key: value`) with indentation to denote the level
+* short notation of ditctionaries (` dict: { key: value, ... }`)
+* lists or sequences (`- entry`) with indentation to denote the level
+* short notation of lists (`list: [ value, ... ]`)
+* unordered lists or sometimes calld sets (`? entry`)
+* values may be single words (i.e. containing only alphanumeric characters)
+* values (strings) can be enclosed in single or double quotes
+* multiline values (`multiline: | ...`) where the following lines are indented one level deeper than the key
+* wrapped content (`wrapped: > ...`)  where line breaks are converted to spaces and empty lines to newlines
+* plain and quoted multiline flow scalars are supported ( `key: ...` where `...` is a quoted or unquoted string that may span multiple lines).
+* anchors (`&anchor`) and references to them (`*anchor`) are supported, to some extend even in a nested way
+
+
+## Knwon limitations
+
+* special characters are interpreted by the bash. Backticks `\`...\`` and expressions starting with `$` which trigger command substitution or parameter expansion may cause unwanted effects - use with caution!
+* directives and document boundaries (`---`, `...`) are simply ignored
+* the parsed data is put into shell variables and thus multidimensional arrays can not be used. For each value on each level a separate shell variable is defined.
+* comments may not be correctly filtered out if quotes are used on the same line inside and outside of the comment
+* yaml tags (`!tag`) and types (`!!type`), especially `!!binary` are not supported.
+* complex mapping keys (e.g. sequences as an index of a mapping) are not supported
+* unordered lists are converted to ordered lists for simplicity
+* strings enclosed in quotes should work, but when double- and single quotes are nested in a too complex manner, the regex used for parsing might not correctly capture the value
+* plain and quoted multi-line flow scalars produce output for each line to be appended
+* anchors are not fully dereferenced twice, i.e. when an anchor is defined and it contains references to other anchors, those are dereferenced when the anchor is processed. If those anchors are re-defined later on, and the main anchor that contains the references on the re-defined anchors, is later dereferenced, it still contains the outdated values.
+
 ## credits: 
 this work is based on Stefan Farestam's [answer on stackoverflow](https://stackoverflow.com/questions/5014632/how-can-i-parse-a-yaml-file-from-a-linux-shell-script)

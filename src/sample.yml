@@ -1,10 +1,10 @@
-global: # this is a comment
+global: &all # this is a comment
   description: &value "this is a dictionary entry" # it also holds an anchor
   next: "this is the second entry"
     lower: 'indentation by two characters start a new level'
   upper: again on upper level of the dictionary
   backref: *value # this references the above anchor
-  short_notation: { lower: 'indentation with short notation', next: "second entry on lower level" }
+  short_notation: &dict { lower: 'indentation with short notation', next: "second entry on lower level" }
   first_list: &list
     - "item 1" # with a comment on a line with quotes
     - &item "item 2"
@@ -14,12 +14,17 @@ global: # this is a comment
     ? A
     ? B
     ? C
-  short_list: [ "first item", "second item", ] # also a comment
+  short_list: &list2 [ "first item", &two "second item", ] # also a comment
   list_of_dictionaries:
-    -  { item_number: 1, first_value: value1, second_value: value2 }
+    -  { item_number: 1, first_value: &one value1, second_value: value2 }
     - *list
+    - *list2
 # another comment
     -  { item_number: "two", first_value: "value 3", second_value: 'value 4' }
+# use some references from above
+    - *dict
+    -  *one
+    - *two
   text_with_linebreaks: |
     this is a multiline text with linebreaks
     that are reproduced in the value
@@ -33,3 +38,12 @@ global: # this is a comment
 
 next_part:
   decription: several independent dictionaries may exist in one file
+  plain_multiline:
+    this is a plain multiline
+    folded string value
+  quoted_multiline: "the same with a quoted
+    string"
+  quoted_multiline: 
+    "and another quoted
+    multiline string"
+  global: *all # reference back to the whole structure from above
