@@ -72,7 +72,10 @@ function parse_yaml {
 	    if(index(val, ref)==1){
 	       tmpval=assignment[val];
 	       sub(ref,full_vn,val);
-	       printf(\"%s=\\\"%s\\\"\n\", val, tmpval);
+	       if (length(tmpval) > 0) {
+	         printf(\"%s=\\\"%s\\\"\n\", val, tmpval);
+	       }
+	       assignment[val]=tmpval;
 	    }
 	 }
       } else if (length(value) > 0) {
