@@ -54,6 +54,7 @@ function parse_yaml {
         -e "s|^\($s\)[\"']\?\([^&][^$fs]\+\)$s\$|\1$fs$fs$fs\2|" \
         -e "s|$s\$||p" | \
    awk -F$fs "{
+      gsub(/\t/,\"        \",\$1);
       if(NF>3){if(value!=\"\"){value = value \" \";}value = value  \$4;}
       else {
 	if(match(\$1,/^\&/)){anchor[substr(\$1,2)]=full_vn;getline};
