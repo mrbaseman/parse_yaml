@@ -1,3 +1,4 @@
+---
 global: &all # this is a comment
   description: &value "this is a dictionary entry" # it also holds an anchor
   next: "this is the second entry"
@@ -47,3 +48,4 @@ next_part:
     "and another quoted
     multiline string"
   global: *all # reference back to the whole structure from above
+...
