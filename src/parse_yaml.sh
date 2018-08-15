@@ -49,17 +49,22 @@ function parse_yaml {
         -e "s|^\($s\)-$s[\"']\(.*\)[\"']$s\$|\1$fs$fs\2|p;t" \
         -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p;t" \
         -e "s|^\($s\)-$s\(.*\)$s\$|\1$fs$fs\2|" \
-        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|" \
+        -e "s|^\($s\)\($w\)$s:$s[\"']\?\(.*\)$s\$|\1$fs\2$fs\3|" \
+        -e "s|^\($s\)[\"']\?\([^&][^$fs]\+\)[\"']$s\$|\1$fs$fs$fs\2|" \
+        -e "s|^\($s\)[\"']\?\([^&][^$fs]\+\)$s\$|\1$fs$fs$fs\2|" \
         -e "s|$s\$||p" | \
    awk -F$fs "{
-      if(match(\$1,/^\&/)){anchor[substr(\$1,2)]=full_vn;getline};
-      indent = length(\$1)/length(\"$i\");
-      vname[indent] = \$2;
-      value= \$3;
-      for (i in vname) {if (i > indent) {delete vname[i]; idx[i]=0}}
-      if(length(\$2)== 0){  vname[indent]= ++idx[indent] };
-      vn=\"\"; for (i=0; i<indent; i++) { vn=(vn)(vname[i])(\"$separator\")}
-      full_vn=\"$prefix\" vn vname[indent];
+      if(NF>3){if(value!=\"\"){value = value \" \";}value = value  \$4;}
+      else {
+	if(match(\$1,/^\&/)){anchor[substr(\$1,2)]=full_vn;getline};
+	indent = length(\$1)/length(\"$i\");
+	vname[indent] = \$2;
+	value= \$3;
+	for (i in vname) {if (i > indent) {delete vname[i]; idx[i]=0}}
+	if(length(\$2)== 0){  vname[indent]= ++idx[indent] };
+	vn=\"\"; for (i=0; i<indent; i++) { vn=(vn)(vname[i])(\"$separator\")}
+	full_vn=\"$prefix\" vn vname[indent];
+      }
       assignment[full_vn]=value;
       if(match(value,/^\*/)){
 	 ref=anchor[substr(value,2)];
