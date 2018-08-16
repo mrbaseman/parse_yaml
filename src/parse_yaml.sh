@@ -68,23 +68,34 @@ function parse_yaml {
 	for (i in vname) {if (i > indent) {delete vname[i]; idx[i]=0}}
 	if(length(\$2)== 0){  vname[indent]= ++idx[indent] };
 	vn=\"\"; for (i=0; i<indent; i++) { vn=(vn)(vname[i])(\"$separator\")}
-	full_vn=\"$prefix\" vn vname[indent];
+	vn=\"$prefix\" vn;
+	full_vn=vn vname[indent];
+	if(vn==\"$prefix\")vn=\"$prefix$separator\";
+	if(vn==\"_\")vn=\"__\";
       }
       assignment[full_vn]=value;
+      assignment[vn]=assignment[vn] \" \" full_vn;
       if(match(value,/^\*/)){
 	 ref=anchor[substr(value,2)];
 	 for(val in assignment){
 	    if(index(val, ref)==1){
 	       tmpval=assignment[val];
 	       sub(ref,full_vn,val);
-	       if (length(tmpval) > 0) {
-	         printf(\"%s=\\\"%s\\\"\n\", val, tmpval);
+	       if(match(val,\"$separator\$\")){
+	          gsub(ref,full_vn,tmpval);
+	       } else if (length(tmpval) > 0) {
+	          printf(\"%s=\\\"%s\\\"\n\", val, tmpval);
 	       }
 	       assignment[val]=tmpval;
 	    }
 	 }
       } else if (length(value) > 0) {
 	 printf(\"%s=\\\"%s\\\"\n\", full_vn, value);
+      }
+   }END{
+      for(val in assignment){
+         if(match(val,\"$separator\$\"))
+	    printf(\"%s=\\\"%s\\\"\n\", val, assignment[val]);
       }
    }"
 }
