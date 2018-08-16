@@ -30,6 +30,7 @@ eval $(parse_yaml sample.yml "" "-")
 
 ## A simple example input file:
 ```
+---
 global:
   input:
     - "main.c"
@@ -38,6 +39,12 @@ global:
   sample_input:
     -  { property1: value1, property2: value2 }
     -  { property1: "value 3", property2: 'value 4' }
+  licence: |
+    this is published under
+    open source license
+    in the hope that it would 
+    be useful
+...
 ```
 and here the parsed output:
 ```
@@ -49,8 +56,28 @@ global_sample_input_1_property1="value1"
 global_sample_input_1_property2="value2"
 global_sample_input_2_property1="value 3"
 global_sample_input_2_property2="value 4"
+global_licence="this is published under\nopen source license\nin the hope that it would \nbe useful\n"
+__=" global"
+global_=" global_input global_flags global_sample_input global_licence"
+global_flags_=" global_flags_1 global_flags_2"
+global_input_=" global_input_1 global_input_2"
+global_sample_input_=" global_sample_input_1 global_sample_input_2"
+global_sample_input_1_=" global_sample_input_1_property1 global_sample_input_1_property2"
+global_sample_input_2_=" global_sample_input_2_property1 global_sample_input_2_property2"
 ```
-for more examples see the sample.yml file included in the src directory
+Apart from the values themselves, there are also lists of the variable names that live below each level (for instance `$global_flags_` contains two variable names, `global_flags_1` and `global_flags_2`. These names can be used to iterate over all members of `$global_flags`:
+```
+for f in $global_flags_ ; do eval echo \$f \$${f} ; done
+```
+produces the following output
+```
+global_flags_1 -O3
+global_flags_2 -fpic
+```
+
+For more examples see the sample.yml file included in the src directory.
+
+
 
 ## Features
 The following yaml features are currently supported:
