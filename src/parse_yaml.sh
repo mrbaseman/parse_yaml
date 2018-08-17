@@ -34,7 +34,7 @@ function parse_yaml {
        }
    print}" | \
    sed  -e "s|^\($s\)?|\1-|" \
-       -ne "s|$s#[^\"']*||;s|^\([^\"'#]*\)#.*|\1|;t1;t;:1;s|^$s\$||;t2;p;:2;d" | \
+       -ne "s|^$s#.*||;s|$s#[^\"']*$||;s|^\([^\"'#]*\)#.*|\1|;t1;t;:1;s|^$s\$||;t2;p;:2;d" | \
    sed -ne "s|,$s\]$s\$|]|" \
         -e ":1;s|^\($s\)\($w\)$s:$s\(&$w\)\?$s\[$s\(.*\)$s,$s\(.*\)$s\]|\1\2: \3[\4]\n\1$i- \5|;t1" \
         -e "s|^\($s\)\($w\)$s:$s\(&$w\)\?$s\[$s\(.*\)$s\]|\1\2: \3\n\1$i- \4|;" \
@@ -74,7 +74,7 @@ function parse_yaml {
 	if(vn==\"_\")vn=\"__\";
       }
       assignment[full_vn]=value;
-      assignment[vn]=assignment[vn] \" \" full_vn;
+      if(!match(assignment[vn], full_vn))assignment[vn]=assignment[vn] \" \" full_vn;
       if(match(value,/^\*/)){
 	 ref=anchor[substr(value,2)];
 	 for(val in assignment){
