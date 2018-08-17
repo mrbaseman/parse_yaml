@@ -1,31 +1,70 @@
+# This sample.yaml is a YAML file that demonstrates what 
+# parse_yaml already supports (see also the "Known limitations" 
+# section of the README.md file).
+
+# YAML files can contain comments, starting with a '#' sign 
+# and ending by the end of the line. This is a comment.
+# The document begins with 3 dashes on a line:
+
 ---
-global: &all # this is a comment
-  description: &value "this is a dictionary entry" # it also holds an anchor
-  next: "this is the second entry"
+
+# Dictionaries, mappings, or collections are different wordings for the 
+# data structure which maps keys to values. YAML allows complex keys, 
+# but parse_yaml restricts itself to single words for the keys.
+# These dictionaries may be nested. Each level has an indentation of
+# two more space chareacters than the level above.
+
+global: # this is the top-most level. Comments may be placed next to the keys
+  description: "this is a dictionary entry" # this is a string enclosed in double quotes
+  version: 1.0 # single words don't have to be enclosed in quotes
+  # so-called anchors can be used to refence a specific value.
+  # those anchors can be used later on to insert that particular value again
+  anchor_example: &value "some value referenced by an anchor"
+  next: 'this another string value' # single quotes may also be used
     lower: 'indentation by two characters start a new level'
+    unquoted: strings can also be written unquoted as plain text
   upper: again on upper level of the dictionary
   backref: *value # this references the above anchor
+  # new levels can also be written in a shorter notation. Instead of the 
+  # indentation, the lower level may be included in curly braces and written
+  # on a single line:
   short_notation: &dict { lower: 'indentation with short notation', next: "second entry on lower level" }
-  first_list: &list
+  # ordered lists or sequences are data structures which enumerate entries,
+  # where each entry doesn't have a particular key. They have an order and 
+  # their index is just an integer value that increases throughout the list
+  first_list: &list  # again we put an anchor on the whole list
     - "item 1" # with a comment on a line with quotes
-    - &item "item 2"
+    - &item "item 2" # here we have an anchor on a single item
     - ...
-    - *item # again a reference
-  unordered_set: # gets converted to an ordered list for simplicity
+    - *item # and we can use the reference on the item already in the list
+  # YAML also knows unordered sets, where the entries don't have a particular index.
+  # parse_yaml understands this structure, but for simplicity and in order to 
+  # store the values in individual shell variables, these sets are converted to 
+  # ordered lists when parsing them
+  unordered_set: 
     ? A
     ? B
     ? C
-  short_list: &list2 [ "first item", &two "second item", ] # also a comment
-  list_of_dictionaries:
+  # there is also a short notation for lists with square brackets
+  # again we use anchors: one for the whole list and one for the second element
+  short_list: &list2 [ "first item", &two "second item", ] # again with two anchors
+
+  # we can also combine lists and dictionaries. So far we have a dictionary
+  # which contains lists below individual keys. But we can also do the opposite:
+  # we can have a list of dictionaries:
+  list_of_dictionaries: &ld
     -  { item_number: 1, first_value: &one value1, second_value: value2 }
+    # we can use references from above here:
     - *list
     - *list2
-# another comment
+# by the way, comments or empty lines may break the indentation, without 
+# influencing the data structure. Here we continue the above list of dictionaries:
     -  { item_number: "two", first_value: "value 3", second_value: 'value 4' }
 # use some references from above
     - *dict
     -  *one
     - *two
+  # long text can be wrapped on several lines in different formats:
   text_with_linebreaks: |
     this is a multiline text with linebreaks
     that are reproduced in the value
@@ -37,6 +76,7 @@ global: &all # this is a comment
     
     empty lines with the same indentation start a new paragraph
 
+# the following key is again at the top level, not below "global", but next to it:
 next_part:
   decription: several independent dictionaries may exist in one file
   plain_multiline:
@@ -47,5 +87,8 @@ next_part:
   quoted_multiline: 
     "and another quoted
     multiline string"
-  global: *all # reference back to the whole structure from above
+  list_of_dictionaries: *ld # reference back to the list of dictionaries from above
 ...
+# the above denotes the end of the document. However, there may be more documents
+# in the same file. parse_yaml just ignores these markers that are needed to be 
+# YAML compliant.
