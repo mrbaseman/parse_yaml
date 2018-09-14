@@ -12,23 +12,23 @@ function parse_yaml {
        if(match(\$0,/$s>$s\$/)){multi=2; sub(/$s>$s\$/,\"\");}
        while(multi>0){
            str=\$0; gsub(/^$s/,\"\", str);
-	   indent=index(\$0,str);
-	   indentstr=substr(\$0, 0, indent-1) \"$i\";
-	   obuf=\$0;
-	   getline;
-	   while(index(\$0,indentstr)){
-	       obuf=obuf substr(\$0, length(indentstr)+1);
-	       if (multi==1){obuf=obuf \"\\\\n\";}
-	       if (multi==2){
-	           if(match(\$0,/^$s\$/))
-		       obuf=obuf \"\\\\n\";
-		       else obuf=obuf \" \"; 
-	       }
+           indent=index(\$0,str);
+           indentstr=substr(\$0, 0, indent-1) \"$i\";
+           obuf=\$0;
+           getline;
+           while(index(\$0,indentstr)){
+               obuf=obuf substr(\$0, length(indentstr)+1);
+               if (multi==1){obuf=obuf \"\\\\n\";}
+               if (multi==2){
+                   if(match(\$0,/^$s\$/))
+                       obuf=obuf \"\\\\n\";
+                       else obuf=obuf \" \";
+               }
                getline;
-	   }
-	   sub(/$s\$/,\"\",obuf);
-	   print obuf;
-	   multi=0;
+           }
+           sub(/$s\$/,\"\",obuf);
+           print obuf;
+           multi=0;
            if(match(\$0,/$s\|$s\$/)){multi=1; sub(/$s\|$s\$/,\"\");}
            if(match(\$0,/$s>$s\$/)){multi=2; sub(/$s>$s\$/,\"\");}
        }
@@ -48,8 +48,8 @@ function parse_yaml {
    sed  -e "s|^\($s\)\($w\)$s:$s\(&$w\)\(.*\)|\1\2:\4\n\3|" \
         -e "s|^\($s\)-$s\(&$w\)\(.*\)|\1- \3\n\2|" | \
    sed -ne "s|^\($s\):|\1|" \
-	-e "s|^\($s\)\(---\)\($s\)||" \
-	-e "s|^\($s\)\(\.\.\.\)\($s\)||" \
+        -e "s|^\($s\)\(---\)\($s\)||" \
+        -e "s|^\($s\)\(\.\.\.\)\($s\)||" \
         -e "s|^\($s\)-$s[\"']\(.*\)[\"']$s\$|\1$fs$fs\2|p;t" \
         -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p;t" \
         -e "s|^\($s\)-$s\(.*\)$s\$|\1$fs$fs\2|" \
@@ -61,42 +61,42 @@ function parse_yaml {
       gsub(/\t/,\"        \",\$1);
       if(NF>3){if(value!=\"\"){value = value \" \";}value = value  \$4;}
       else {
-	if(match(\$1,/^\&/)){anchor[substr(\$1,2)]=full_vn;getline};
-	indent = length(\$1)/length(\"$i\");
-	vname[indent] = \$2;
-	value= \$3;
-	for (i in vname) {if (i > indent) {delete vname[i]; idx[i]=0}}
-	if(length(\$2)== 0){  vname[indent]= ++idx[indent] };
-	vn=\"\"; for (i=0; i<indent; i++) { vn=(vn)(vname[i])(\"$separator\")}
-	vn=\"$prefix\" vn;
-	full_vn=vn vname[indent];
-	if(vn==\"$prefix\")vn=\"$prefix$separator\";
-	if(vn==\"_\")vn=\"__\";
+        if(match(\$1,/^\&/)){anchor[substr(\$1,2)]=full_vn;getline};
+        indent = length(\$1)/length(\"$i\");
+        vname[indent] = \$2;
+        value= \$3;
+        for (i in vname) {if (i > indent) {delete vname[i]; idx[i]=0}}
+        if(length(\$2)== 0){  vname[indent]= ++idx[indent] };
+        vn=\"\"; for (i=0; i<indent; i++) { vn=(vn)(vname[i])(\"$separator\")}
+        vn=\"$prefix\" vn;
+        full_vn=vn vname[indent];
+        if(vn==\"$prefix\")vn=\"$prefix$separator\";
+        if(vn==\"_\")vn=\"__\";
       }
       assignment[full_vn]=value;
       if(!match(assignment[vn], full_vn))assignment[vn]=assignment[vn] \" \" full_vn;
       if(match(value,/^\*/)){
-	 ref=anchor[substr(value,2)];
-	 for(val in assignment){
-	    if(index(val, ref)==1){
-	       tmpval=assignment[val];
-	       sub(ref,full_vn,val);
-	       if(match(val,\"$separator\$\")){
-	          gsub(ref,full_vn,tmpval);
-	       } else if (length(tmpval) > 0) {
-	          printf(\"%s=\\\"%s\\\"\n\", val, tmpval);
-	       }
-	       assignment[val]=tmpval;
-	    }
-	 }
+         ref=anchor[substr(value,2)];
+         for(val in assignment){
+            if(index(val, ref)==1){
+               tmpval=assignment[val];
+               sub(ref,full_vn,val);
+               if(match(val,\"$separator\$\")){
+                  gsub(ref,full_vn,tmpval);
+               } else if (length(tmpval) > 0) {
+                  printf(\"%s=\\\"%s\\\"\n\", val, tmpval);
+               }
+               assignment[val]=tmpval;
+            }
+         }
       } else if (length(value) > 0) {
-	 printf(\"%s=\\\"%s\\\"\n\", full_vn, value);
+         printf(\"%s=\\\"%s\\\"\n\", full_vn, value);
       }
    }END{
       asorti(assignment,sorted);
       for(val in sorted){
          if(match(sorted[val],\"$separator\$\"))
-	    printf(\"%s=\\\"%s\\\"\n\", sorted[val], assignment[sorted[val]]);
+            printf(\"%s=\\\"%s\\\"\n\", sorted[val], assignment[sorted[val]]);
       }
    }"
 }
