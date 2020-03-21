@@ -93,10 +93,9 @@ function parse_yaml {
          printf(\"%s=\\\"%s\\\"\n\", full_vn, value);
       }
    }END{
-      asorti(assignment,sorted);
-      for(val in sorted){
-         if(match(sorted[val],\"$separator\$\"))
-            printf(\"%s=\\\"%s\\\"\n\", sorted[val], assignment[sorted[val]]);
+      for(val in assignment){
+         if(match(val,\"$separator\$\"))
+            printf(\"%s=\\\"%s\\\"\n\", val, assignment[val]);
       }
    }"
 }
