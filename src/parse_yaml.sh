@@ -61,7 +61,7 @@ function parse_yaml {
       gsub(/\t/,\"        \",\$1);
       if(NF>3){if(value!=\"\"){value = value \" \";}value = value  \$4;}
       else {
-        if(match(\$1,/^\&/)){anchor[substr(\$1,2)]=full_vn;getline};
+        if(match(\$1,/^&/)){anchor[substr(\$1,2)]=full_vn;getline};
         indent = length(\$1)/length(\"$i\");
         vname[indent] = \$2;
         value= \$3;
