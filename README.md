@@ -87,7 +87,7 @@ The following yaml features are currently supported:
 * short notation of ditctionaries (` dict: { key: value, ... }`)
 * lists or sequences (`- entry`) with indentation to denote the level
 * short notation of lists (`list: [ value, ... ]`)
-* unordered lists or sometimes calld sets (`? entry`)
+* unordered lists or sometimes called sets (`? entry`)
 * values may be single words (i.e. containing only alphanumeric characters)
 * values (strings) can be enclosed in single or double quotes
 * multiline values (`multiline: | ...`) where the following lines are indented one level deeper than the key
@@ -106,8 +106,10 @@ The following yaml features are currently supported:
 * complex mapping keys (e.g. sequences as an index of a mapping) are not supported
 * unordered lists are converted to ordered lists for simplicity
 * strings enclosed in quotes should work, but when double- and single quotes are nested in a too complex manner, the regex used for parsing might not correctly capture the value
+* multiple quotes inside a string are not correctly "unfolded". Two subsequent single quotes in a string enclosed by single quotes should become one single quote. There might also be problems with quotes masked by backslash in a quoted string.
 * plain and quoted multi-line flow scalars produce output for each line to be appended
 * anchors are not fully dereferenced twice, i.e. when an anchor is defined and it contains references to other anchors, those are dereferenced when the anchor is processed. If those anchors are re-defined later on, and the main anchor that contains the references on the re-defined anchors, is later dereferenced, it still contains the outdated values.
+* if a quoted string starts with a `'*'` character and an anchor exists which is denoted by the following characters in the string, this is currently treated as a dereference, even if the string is enclosed in single quotes
 
 ## credits: 
 this work is based on Stefan Farestam's [answer on stackoverflow](https://stackoverflow.com/questions/5014632/how-can-i-parse-a-yaml-file-from-a-linux-shell-script)
