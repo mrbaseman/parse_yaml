@@ -77,17 +77,21 @@ function parse_yaml {
       if(!match(assignment[vn], full_vn))assignment[vn]=assignment[vn] \" \" full_vn;
       if(match(value,/^\*/)){
          ref=anchor[substr(value,2)];
-         for(val in assignment){
-            if(index(val, ref)==1){
-               tmpval=assignment[val];
-               sub(ref,full_vn,val);
-               if(match(val,\"$separator\$\")){
-                  gsub(ref,full_vn,tmpval);
-               } else if (length(tmpval) > 0) {
-                  printf(\"%s=\\\"%s\\\"\n\", val, tmpval);
-               }
-               assignment[val]=tmpval;
-            }
+         if(length(ref)==0){
+           printf(\"%s=\\\"%s\\\"\n\", full_vn, value);
+         } else {
+           for(val in assignment){
+              if((length(ref)>0)&&index(val, ref)==1){
+                 tmpval=assignment[val];
+                 sub(ref,full_vn,val);
+                 if(match(val,\"$separator\$\")){
+                    gsub(ref,full_vn,tmpval);
+                 } else if (length(tmpval) > 0) {
+                    printf(\"%s=\\\"%s\\\"\n\", val, tmpval);
+                 }
+                 assignment[val]=tmpval;
+              }
+           }
          }
       } else if (length(value) > 0) {
          printf(\"%s=\\\"%s\\\"\n\", full_vn, value);
