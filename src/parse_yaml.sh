@@ -5,32 +5,43 @@
 function parse_yaml {
    local prefix=$2
    local separator=${3:-_}
-   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=${fs:-$(echo @|tr @ '\034')} i=${i:-  }
+
+   local indexfix
+   # Detect awk flavor
+   if awk --version 2>&1 | grep -q "GNU Awk" ; then
+      # GNU Awk detected
+      indexfix=-1
+   elif awk -Wv 2>&1 | grep -q "mawk" ; then
+      # mawk detected
+      indexfix=0
+   fi
+
+   local s='[[:space:]]*' sm='[ \t]*' w='[a-zA-Z0-9_]*' fs=${fs:-$(echo @|tr @ '\034')} i=${i:-  }
    cat $1 | \
    awk -F$fs "{multi=0; 
-       if(match(\$0,/$s\|$s\$/)){multi=1; sub(/$s\|$s\$/,\"\");}
-       if(match(\$0,/$s>$s\$/)){multi=2; sub(/$s>$s\$/,\"\");}
+       if(match(\$0,/$sm\|$sm$/)){multi=1; sub(/$sm\|$sm$/,\"\");}
+       if(match(\$0,/$sm>$sm$/)){multi=2; sub(/$sm>$sm$/,\"\");}
        while(multi>0){
-           str=\$0; gsub(/^$s/,\"\", str);
+           str=\$0; gsub(/^$sm/,\"\", str);
            indent=index(\$0,str);
-           indentstr=substr(\$0, 0, indent-1) \"$i\";
+           indentstr=substr(\$0, 0, indent+$indexfix) \"$i\";
            obuf=\$0;
            getline;
            while(index(\$0,indentstr)){
                obuf=obuf substr(\$0, length(indentstr)+1);
                if (multi==1){obuf=obuf \"\\\\n\";}
                if (multi==2){
-                   if(match(\$0,/^$s\$/))
+                   if(match(\$0,/^$sm$/))
                        obuf=obuf \"\\\\n\";
                        else obuf=obuf \" \";
                }
                getline;
            }
-           sub(/$s\$/,\"\",obuf);
+           sub(/$sm$/,\"\",obuf);
            print obuf;
            multi=0;
-           if(match(\$0,/$s\|$s\$/)){multi=1; sub(/$s\|$s\$/,\"\");}
-           if(match(\$0,/$s>$s\$/)){multi=2; sub(/$s>$s\$/,\"\");}
+           if(match(\$0,/$sm\|$sm$/)){multi=1; sub(/$sm\|$sm$/,\"\");}
+           if(match(\$0,/$sm>$sm$/)){multi=2; sub(/$sm>$sm$/,\"\");}
        }
    print}" | \
    sed  -e "s|^\($s\)?|\1-|" \
