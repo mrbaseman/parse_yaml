@@ -96,7 +96,7 @@ The following yaml features are currently supported:
 * anchors (`&anchor`) and references to them (`*anchor`) are supported, to some extend even in a nested way
 
 
-## Knwon limitations
+## Known limitations
 
 * special characters are interpreted by the bash. Backticks `\`...\`` and expressions starting with `$` which trigger command substitution or parameter expansion may cause unwanted effects - use with caution!
 * directives and document boundaries (`---`, `...`) are simply ignored
