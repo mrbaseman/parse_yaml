@@ -1,12 +1,22 @@
 #!/bin/bash
 
+###############################################################################
+#
 # source: https://github.com/mrbaseman/parse_yaml.git
+#
+###############################################################################
+# Parses a YAML file and outputs variable assigments.  Can optionally accept a 
+# variable name prefix and a variable name separator
+#
+# Usage:
+#   parse_yaml file [prefix] [separator]
+###############################################################################
 
 function parse_yaml {
    local prefix=$2
    local separator=${3:-_}
 
-   local indexfix
+   local indexfix=-1
    # Detect awk flavor
    if awk --version 2>&1 | grep -q "GNU Awk" ; then
       # GNU Awk detected
@@ -17,6 +27,18 @@ function parse_yaml {
    fi
 
    local s='[[:space:]]*' sm='[ \t]*' w='[a-zA-Z0-9_]*' fs=${fs:-$(echo @|tr @ '\034')} i=${i:-  }
+
+   ###############################################################################
+   # cat:   read the yaml file into the stream
+   # awk 1: process multi-line text
+   # sed 1: remove comments and empty lines
+   # sed 2: process lists
+   # sed 3: process dictionaries
+   # sed 4: rearrange anchors
+   # sed 5: remove '---'/'...'/quotes, add file separator to create fields for awk 2
+   # awk 2: convert the formatted data to variable assignments
+   ###############################################################################
+
    cat $1 | \
    awk -F$fs "{multi=0; 
        if(match(\$0,/$sm\|$sm$/)){multi=1; sub(/$sm\|$sm$/,\"\");}
@@ -44,19 +66,35 @@ function parse_yaml {
            if(match(\$0,/$sm>$sm$/)){multi=2; sub(/$sm>$sm$/,\"\");}
        }
    print}" | \
-   sed  -e "s|^\($s\)?|\1-|" \
-       -ne "s|^$s#.*||;s|$s#[^\"']*$||;s|^\([^\"'#]*\)#.*|\1|;t1;t;:1;s|^$s\$||;t2;p;:2;d" | \
-   sed -ne "s|,$s\]$s\$|]|" \
-        -e ":1;s|^\($s\)\($w\)$s:$s\(&$w\)\?$s\[$s\(.*\)$s,$s\(.*\)$s\]|\1\2: \3[\4]\n\1$i- \5|;t1" \
-        -e "s|^\($s\)\($w\)$s:$s\(&$w\)\?$s\[$s\(.*\)$s\]|\1\2: \3\n\1$i- \4|;" \
-        -e ":2;s|^\($s\)-$s\[$s\(.*\)$s,$s\(.*\)$s\]|\1- [\2]\n\1$i- \3|;t2" \
+   sed -e "s|^\($s\)?|\1-|" \
+        -ne "s|^$s#.*||;s|$s#[^\"']*$||;s|^\([^\"'#]*\)#.*|\1|;t 1" \
+        -ne "t" \
+        -ne ":1" \
+        -ne "s|^$s\$||;t 2" \
+        -ne "p" \
+        -ne ":2" \
+        -ne "d" | \
+   sed  -ne "s|,$s\]|]|g" \
+        -e ":1" \
+        -e "s|^\($s\)\($w\)$s:$s\(&$w\)$s\[$s\(.*\)$s,$s\(.*\)$s\]|\1\2: \3[\4]\n\1$i- \5|;t 1" \
+        -e "s|^\($s\)\($w\)$s:$s\(&$w\)$s\[$s\(.*\)$s\]|\1\2: \3\n\1$i- \4|;" \
+        -e ":2" \
+        -e "s|^\($s\)\($w\)$s:$s\[$s\(.*\)$s,$s\(.*\)$s\]|\1\2: [\3]\n\1$i- \4|;t 2" \
+        -e "s|^\($s\)\($w\)$s:$s\[$s\(.*\)$s\]|\1\2:\n\1$i- \3|;" \
+        -e ":3" \
+        -e "s|^\($s\)-$s\[$s\(.*\)$s,$s\(.*\)$s\]|\1- [\2]\n\1$i- \3|;t 3" \
         -e "s|^\($s\)-$s\[$s\(.*\)$s\]|\1-\n\1$i- \2|;p" | \
-   sed -ne "s|,$s}$s\$|}|" \
-        -e ":1;s|^\($s\)-$s{$s\(.*\)$s,$s\($w\)$s:$s\(.*\)$s}|\1- {\2}\n\1$i\3: \4|;t1" \
+   sed -ne "s|,$s}|}|g" \
+        -e ":1" \
+        -e "s|^\($s\)-$s{$s\(.*\)$s,$s\($w\)$s:$s\(.*\)$s}|\1- {\2}\n\1$i\3: \4|;t 1" \
         -e "s|^\($s\)-$s{$s\(.*\)$s}|\1-\n\1$i\2|;" \
-        -e ":2;s|^\($s\)\($w\)$s:$s\(&$w\)\?$s{$s\(.*\)$s,$s\($w\)$s:$s\(.*\)$s}|\1\2: \3 {\4}\n\1$i\5: \6|;t2" \
-        -e "s|^\($s\)\($w\)$s:$s\(&$w\)\?$s{$s\(.*\)$s}|\1\2: \3\n\1$i\4|;p" | \
-   sed  -e "s|^\($s\)\($w\)$s:$s\(&$w\)\(.*\)|\1\2:\4\n\3|" \
+        -e ":2" \
+        -e "s|^\($s\)\($w\)$s:$s\(&$w\)$s{$s\(.*\)$s,$s\($w\)$s:$s\(.*\)$s}|\1\2: \3 {\4}\n\1$i\5: \6|;t 2" \
+        -e "s|^\($s\)\($w\)$s:$s\(&$w\)$s{$s\(.*\)$s}|\1\2: \3\n\1$i\4|;" \
+        -e ":3" \
+        -e "s|^\($s\)\($w\)$s:$s{$s\(.*\)$s,$s\($w\)$s:$s\(.*\)$s}|\1\2: {\3}\n\1$i\4: \5|;t 3" \
+        -e "s|^\($s\)\($w\)$s:$s{$s\(.*\)$s}|\1\2:\n\1$i\3|;p" | \
+   sed -e "s|^\($s\)\($w\)$s:$s\(&$w\)\(.*\)|\1\2:\4\n\3|" \
         -e "s|^\($s\)-$s\(&$w\)\(.*\)|\1- \3\n\2|" | \
    sed -ne "s|^\($s\):|\1|" \
         -e "s|^\($s\)\(---\)\($s\)||" \
@@ -67,6 +105,12 @@ function parse_yaml {
         -e "s|^\($s\)\($w\)$s:$s[\"']\?\(.*\)$s\$|\1$fs\2$fs\3|" \
         -e "s|^\($s\)[\"']\?\([^&][^$fs]\+\)[\"']$s\$|\1$fs$fs$fs\2|" \
         -e "s|^\($s\)[\"']\?\([^&][^$fs]\+\)$s\$|\1$fs$fs$fs\2|" \
+        -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)$s\$|\1$fs\2$fs\3|" \
+        -e "s|^\($s\)[\"']\([^&][^$fs]*\)[\"']$s\$|\1$fs$fs$fs\2|" \
+        -e "s|^\($s\)[\"']\([^&][^$fs]*\)$s\$|\1$fs$fs$fs\2|" \
+        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|" \
+        -e "s|^\($s\)\([^&][^$fs]*\)[\"']$s\$|\1$fs$fs$fs\2|" \
+        -e "s|^\($s\)\([^&][^$fs]*\)$s\$|\1$fs$fs$fs\2|" \
         -e "s|$s\$||p" | \
    awk -F$fs "{
       gsub(/\t/,\"        \",\$1);
