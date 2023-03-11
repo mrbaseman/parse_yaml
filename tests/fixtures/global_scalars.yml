@@ -1,0 +1,7 @@
+# Test fixture: global scalars
+
+---
+
+global_quoted_string: "This is a string"
+global_unquoted_string: 1.0
+global_unquoted_multistring: Look Ma, no quotes!

@@ -1,0 +1,15 @@
+# Test fixture: comments
+
+---
+
+# Comments can provide useful infomation about the parameters in the file
+# without affecting the values
+global: # comments can be at the end of a line
+  thing_1: "Addams Family"
+  thing_2: "Fantastic Four"
+  next_level:
+    - further
+    - "and further"
+# by the way, comments or empty lines may break the indentation, without 
+# influencing the data structure. Here we continue the above list of dictionaries:
+    - down
