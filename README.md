@@ -77,7 +77,39 @@ global_flags_2 -fpic
 
 For more examples see the sample.yml file included in the src directory.
 
+## Using `get_yaml_value` Function
 
+You can use the `get_yaml_value` function to retrieve a specific value from the YAML file. Here's an example of how to use it:
+
+First, source the `parse_yaml.sh` script:
+
+```bash
+source parse_yaml.sh
+```
+
+Then, parse the YAML file and store the result in a variable:
+
+```bash
+yaml1=$(Yaml sample.yml)
+```
+
+Define the key you want to retrieve, using dots to separate the levels:
+
+```bash
+key=".global.next.unquoted"
+```
+
+Use the `get_yaml_value` function to get the value for the specified key:
+
+```bash
+value=$(get_yaml_value "$yaml1" $key)
+```
+
+Finally, you can print the value:
+
+```bash
+echo "Value of $key: $value"
+```
 
 ## Features
 The following yaml features are currently supported:

@@ -114,3 +114,19 @@ function parse_yaml {
       }
    }"
 }
+
+Yaml() {
+  yaml=$(parse_yaml $@)
+  echo $yaml
+}
+
+get_yaml_value() {
+  local yaml_variables="$1"
+  local path="$2"
+  # Remove the leading dot and replace the remaining dots with underscores
+  local var_name="${path#.}"
+  var_name="${var_name//./_}"
+  # Use grep to find the value for the given variable name in the YAML variables string
+  local value=$(echo "$yaml_variables" | grep -o "$var_name=\"[^\"]*\"" | cut -d '"' -f 2)
+  echo "$value"
+}
