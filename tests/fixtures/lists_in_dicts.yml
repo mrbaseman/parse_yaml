@@ -1,0 +1,10 @@
+# Test fixture: lists in dicts
+
+---
+
+dictionary_with_lists:
+  watchlist:
+    - Eden's Zero
+    - "Fairy Tail"
+    - "Black Clover"
+  watched_list: [ "Dragonball Z", Hunter x Hunter, Naruto ]

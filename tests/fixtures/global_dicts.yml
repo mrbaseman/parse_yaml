@@ -1,0 +1,9 @@
+# Test fixture: global dicts
+
+---
+
+global_dictionary: 
+  item1: "Naruto"
+  item2: Luffy
+  item3: Vash the Stampede
+global_dictionary_short: { first: "Lupin III", second: Dai }

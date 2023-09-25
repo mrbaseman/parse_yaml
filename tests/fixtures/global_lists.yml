@@ -1,0 +1,9 @@
+# Test fixture: global lists
+
+---
+
+global_list:
+  - "Ichigo"
+  - Bankai
+  - Getsuga Tensho
+global_list_short: [ Uchiha Sasuke, "Kekkei Genkai", Sharingan ]

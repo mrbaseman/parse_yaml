@@ -1,0 +1,23 @@
+# Test fixture: long text
+
+---
+
+global:
+  text_with_linebreaks: |
+    this is a multiline text with linebreaks
+    that are reproduced in the value
+       inside there may be indentations
+    and this continues the previous block text
+  Without_linebreaks: >
+    in this case the line breaks of the multiline text
+    get replaced by space characters
+    
+    empty lines with the same indentation start a new paragraph
+  plain_multiline:
+    this is a plain multiline
+    folded string value
+  quoted_multiline: "the same with a quoted
+    string"
+  quoted_multiline: 
+    "and another quoted
+    multiline string"
