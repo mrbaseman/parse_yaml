@@ -31,4 +31,6 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run the test script
-        run: tests/test.sh
+        run: |
+          cd tests;
+          ./test.sh
