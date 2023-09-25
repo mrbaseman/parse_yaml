@@ -1,0 +1,9 @@
+# Test fixture: named elements in lists
+
+---
+
+global:
+  - path: "/swagger"
+    methods: ["GET", "PUT"]
+  - another: "string"
+  - "test"

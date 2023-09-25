@@ -219,6 +219,24 @@ test_variable global_Without_linebreaks "in this case the line breaks of the mul
 test_variable global_plain_multiline "this is a plain multiline folded string value"
 test_variable global_quoted_multiline "and another quoted multiline string"
 
+# ----------------------------
+# test named elements in lists
+# ----------------------------
+
+eval $(parse_yaml fixtures/named_elements_in_lists.yml)
+test_variable __ " global"
+
+test_variable global_1_ " global_1_path global_1_methods"
+test_variable global_2_ " global_2_another"
+test_variable global_ " global_1 global_2 global_3"
+test_variable global_1_methods_ " global_1_methods_1 global_1_methods_2"
+
+test_variable global_1_path "/swagger"
+test_variable global_1_methods_1 "GET"
+test_variable global_1_methods_2 "PUT"
+test_variable global_2_another "string"
+test_variable global_3 "test"
+
 # ---------------------------
 # Test everything everywhere all at once
 # ---------------------------
