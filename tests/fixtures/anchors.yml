@@ -1,0 +1,21 @@
+# Test fixture: anchors
+
+---
+
+global:
+  anchor_example: &value "some value referenced by an anchor"
+  backref: *value
+  short_notation: &dict { lower: 'indentation with short notation', next: "second entry on lower level" }
+  first_list: &list
+    - &one "item 1"
+    - &item "item 2"
+    - ...
+    - *item
+  short_list: &list2 [ "first item", &two "second item", ]
+  list_of_lists:
+    - *list
+    - *list2
+  random_refs:
+    - *dict
+    -  *one
+    - *two

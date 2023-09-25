@@ -1,0 +1,10 @@
+# Test fixture: nested lists
+
+---
+
+global:
+  - 
+    - "one"
+    - two
+    - 3
+  - [ four, 5, "six" ]

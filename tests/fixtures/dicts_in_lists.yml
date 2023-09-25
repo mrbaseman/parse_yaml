@@ -1,0 +1,10 @@
+# Test fixture: dicts in lists
+
+---
+
+list_of_dictionaries:
+    -  { item_number: 1, first_value: value1, second_value: value2 }
+    -
+      item_number: 2
+      first_value: "value1"
+      second_value: value 2
