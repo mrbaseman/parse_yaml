@@ -13,6 +13,8 @@
 ###############################################################################
 
 function parse_yaml {
+    unset i
+    unset fs
     local prefix=$2
     local separator=${3:-_}
 
