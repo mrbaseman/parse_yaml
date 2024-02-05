@@ -28,7 +28,7 @@ function parse_yaml {
         indexfix=0
     fi
 
-    local s='[[:space:]]*' sm='[ \t]*' w='[a-zA-Z0-9_]*' fs=${fs:-$(echo @|tr @ '\034')} i=${i:-  }
+    local s='[[:space:]]*' sm='[ \t]*' w='[a-zA-Z0-9_.]*' fs=${fs:-$(echo @|tr @ '\034')} i=${i:-  }
 
     ###############################################################################
     # cat:   read the yaml file into the stream
@@ -131,6 +131,7 @@ function parse_yaml {
             if(vn==\"$prefix\")vn=\"$prefix$separator\";
             if(vn==\"_\")vn=\"__\";
         }
+        gsub(/\./,\"$separator\",full_vn);
         assignment[full_vn]=value;
         if(!match(assignment[vn], full_vn))assignment[vn]=assignment[vn] \" \" full_vn;
         if(match(value,/^\*/)){

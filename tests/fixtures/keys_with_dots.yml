@@ -1,0 +1,7 @@
+# Test fixture: keys with dots
+
+---
+
+key.withdots: blue # test of key with dots
+another.key: yellow # another one
+key: red # next key

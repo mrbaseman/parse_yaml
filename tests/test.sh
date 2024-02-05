@@ -237,6 +237,18 @@ test_variable global_1_methods_2 "PUT"
 test_variable global_2_another "string"
 test_variable global_3 "test"
 
+
+# ---------------------------
+# Keys with dots
+# ---------------------------
+eval $(parse_yaml fixtures/keys_with_dots.yml)
+test_variable __ " key_withdots another_key"
+
+test_variable key_withdots "blue"
+test_variable another_key "yellow"
+test_variable key "red"
+
+
 # ---------------------------
 # Test everything everywhere all at once
 # ---------------------------
