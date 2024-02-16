@@ -103,7 +103,8 @@ The following yaml features are currently supported:
 * the parsed data is put into shell variables and thus multidimensional arrays can not be used. For each value on each level a separate shell variable is defined.
 * comments may not be correctly filtered out if quotes are used on the same line inside and outside of the comment
 * yaml tags (`!tag`) and types (`!!type`), especially `!!binary` are not supported.
-* complex mapping keys (e.g. sequences as an index of a mapping) are not supported
+* complex mapping keys (e.g. sequences as an index of a mapping) are not supported.
+* keys in mappings are assumed to be words (consisting of alphanumerical characters), dots are replaced by the separator character, but other special characters are not supported. 
 * unordered lists are converted to ordered lists for simplicity
 * strings enclosed in quotes should work, but when double- and single quotes are nested in a too complex manner, the regex used for parsing might not correctly capture the value
 * multiple quotes inside a string are not correctly "unfolded". Two subsequent single quotes in a string enclosed by single quotes should become one single quote. There might also be problems with quotes masked by backslash in a quoted string.
