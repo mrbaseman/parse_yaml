@@ -248,6 +248,18 @@ test_variable key_withdots "blue"
 test_variable another_key "yellow"
 test_variable key "red"
 
+# ---------------------------
+# quoted values
+# ---------------------------
+eval $(parse_yaml fixtures/quoted_values.yml)
+test_variable __ " double_quotes single_quotes nested_quotes single_quotes_in_double double_quotes_in_double"
+
+test_variable double_quotes 'this is a quoted string'
+test_variable single_quotes 'this is in single quotes'
+test_variable nested_quotes 'there may be "double quotes" inside of single quotes'
+test_variable single_quotes_in_double "also here it's possible to have single quotes"
+test_variable double_quotes_in_double 'masked "double quotes" inside of double quotes'
+
 
 # ---------------------------
 # Test everything everywhere all at once

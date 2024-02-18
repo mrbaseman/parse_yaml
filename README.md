@@ -88,7 +88,7 @@ The following yaml features are currently supported:
 * lists or sequences (`- entry`) with indentation to denote the level
 * short notation of lists (`list: [ value, ... ]`)
 * unordered lists or sometimes called sets (`? entry`)
-* values may be single words (i.e. containing only alphanumeric characters)
+* keys may be single words (i.e. containing only alphanumeric characters)
 * values (strings) can be enclosed in single or double quotes
 * multiline values (`multiline: | ...`) where the following lines are indented one level deeper than the key
 * wrapped content (`wrapped: > ...`)  where line breaks are converted to spaces and empty lines to newlines
@@ -107,7 +107,7 @@ The following yaml features are currently supported:
 * keys in mappings are assumed to be words (consisting of alphanumerical characters), dots are replaced by the separator character, but other special characters are not supported. 
 * unordered lists are converted to ordered lists for simplicity
 * strings enclosed in quotes should work, but when double- and single quotes are nested in a too complex manner, the regex used for parsing might not correctly capture the value
-* multiple quotes inside a string are not correctly "unfolded". Two subsequent single quotes in a string enclosed by single quotes should become one single quote. There might also be problems with quotes masked by backslash in a quoted string.
+* multiple quotes inside a string are not correctly "unfolded". Single quotes in a string should be preserved such that they are properly escaped in the variable assignment. There might be problems with quotes masked by backslash in a quoted string.
 * plain and quoted multi-line flow scalars produce output for each line to be appended
 * anchors are not fully dereferenced twice, i.e. when an anchor is defined and it contains references to other anchors, those are dereferenced when the anchor is processed. If those anchors are re-defined later on, and the main anchor that contains the references on the re-defined anchors, is later dereferenced, it still contains the outdated values.
 * if a quoted string starts with a `'*'` character and an anchor exists which is denoted by the following characters in the string, this is currently treated as a dereference, even if the string is enclosed in single quotes

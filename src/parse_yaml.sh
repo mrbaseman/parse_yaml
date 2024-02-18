@@ -132,12 +132,14 @@ function parse_yaml {
             if(vn==\"_\")vn=\"__\";
         }
         gsub(/\./,\"$separator\",full_vn);
+	gsub(/\\\\\"/,\"\\\"\",value);
+	gsub(/'/,\"'\\\"'\\\"'\",value);
         assignment[full_vn]=value;
         if(!match(assignment[vn], full_vn))assignment[vn]=assignment[vn] \" \" full_vn;
         if(match(value,/^\*/)){
             ref=anchor[substr(value,2)];
             if(length(ref)==0){
-                printf(\"%s=\\\"%s\\\"\n\", full_vn, value);
+                printf(\"%s='%s'\n\", full_vn, value);
             } else {
                 for(val in assignment){
                     if((length(ref)>0)&&index(val, ref)==1){
@@ -146,19 +148,19 @@ function parse_yaml {
                         if(match(val,\"$separator\$\")){
                             gsub(ref,full_vn,tmpval);
                         } else if (length(tmpval) > 0) {
-                            printf(\"%s=\\\"%s\\\"\n\", val, tmpval);
+                            printf(\"%s='%s'\n\", val, tmpval);
                         }
                         assignment[val]=tmpval;
                     }
                 }
             }
         } else if (length(value) > 0) {
-            printf(\"%s=\\\"%s\\\"\n\", full_vn, value);
+            printf(\"%s='%s'\n\", full_vn, value);
         }
     }END{
         for(val in assignment){
             if(match(val,\"$separator\$\"))
-                printf(\"%s=\\\"%s\\\"\n\", val, assignment[val]);
+                printf(\"%s='%s'\n\", val, assignment[val]);
         }
     }"
 }
