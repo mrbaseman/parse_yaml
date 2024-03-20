@@ -5,11 +5,13 @@
 # source: https://github.com/mrbaseman/parse_yaml.git
 #
 ###############################################################################
-# Parses a YAML file and outputs variable assigments.  Can optionally accept a 
-# variable name prefix and a variable name separator
+# Parses a YAML file ('-' means standard input), or standard input if file is
+# not given, and outputs variable assigments.  Can optionally accept a variable
+# name prefix and a variable name separator if file is given.
 #
 # Usage:
-#   parse_yaml file [prefix] [separator]
+#   parse_yaml
+#   parse_yaml file|- [prefix] [separator]
 ###############################################################################
 
 function parse_yaml {
@@ -31,7 +33,7 @@ function parse_yaml {
     local s='[[:space:]]*' sm='[ \t]*' w='[a-zA-Z0-9_.]*' fs=${fs:-$(echo @|tr @ '\034')} i=${i:-  }
 
     ###############################################################################
-    # cat:   read the yaml file into the stream
+    # cat:   read the yaml file (or stdin) into the stream
     # awk 1: process multi-line text
     # sed 1: remove comments and empty lines
     # sed 2: process lists
@@ -41,7 +43,7 @@ function parse_yaml {
     # awk 2: convert the formatted data to variable assignments
     ###############################################################################
 
-    cat $1 | \
+    cat ${1:--} | \
     awk -F$fs "{multi=0;
         if(match(\$0,/$sm\|$sm$/)){multi=1; sub(/$sm\|$sm$/,\"\");}
         if(match(\$0,/$sm>$sm$/)){multi=2; sub(/$sm>$sm$/,\"\");}
