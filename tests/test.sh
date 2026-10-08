@@ -237,6 +237,18 @@ test_variable global_1_methods_2 "PUT"
 test_variable global_2_another "string"
 test_variable global_3 "test"
 
+# ---------------------------
+# Keys with dashes
+# ---------------------------
+eval $(parse_yaml fixtures/keys_with_dashes.yml)
+test_variable __ " global_dashes"
+
+test_variable global_dashes_thing_1 "Addams Family"
+test_variable global_dashes_thing_2 "Fantastic Four"
+test_variable global_dashes_next_level_1 "further"
+test_variable global_dashes_next_level_2 "and further"
+test_variable global_dashes_next_level_3 "down"
+test_variable global_dashes_next_level_ " global_dashes_next_level_1 global_dashes_next_level_2 global_dashes_next_level_3"
 
 # ---------------------------
 # Keys with dots

@@ -1,0 +1,11 @@
+# Test fixture: keys with dashes
+
+---
+
+global_dashes:
+  thing-1: "Addams Family"
+  thing_2: "Fantastic Four"
+  next-level:
+    - further
+    - "and further"
+    - down
